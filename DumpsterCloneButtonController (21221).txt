@@ -1,0 +1,68 @@
+public class DumpsterCloneButtonController {
+
+        public Dumpsters__c NewDumpsterRecord {get; set;}
+        public String dumpID;
+        public Dumpsters__c OldDumpsterRecord;
+        
+    public DumpsterCloneButtonController(ApexPages.StandardController controller){
+                NewDumpsterRecord = new Dumpsters__c();
+               
+       //Below code is for Clone Feature
+        dumpID = ApexPages.currentPage().getParameters().get('id');
+        system.debug('dumpster page id>>'+ dumpID);
+        if(dumpID != null)
+        {
+         OldDumpsterRecord = [ SELECT Id, Name,Rental__c,Pick_Up_Driver__c,Drop_Off_Visit_Date__c,  Pick_Up_Driver_Lkp__c,Contractor_Name_For_Gate__c,Fill_Details__c,Comments__c ,Is_Cloning__c   ,Haulbrooke_Regional_Base__c ,Sales_Tax__c  ,Driver__c,Drop_of_Driver_Lkp__c,Tonnage_Quantity__c  ,Pdf_Parser_Delivery_Address__c,Concrete_Only__c  ,Invoicing_Comments__c  ,Proposal_Lost_Reason__c ,Dumpster_Size__c,Recurring__c ,Per_Ton_Charge__c,Estimated_GP__c ,Delivery_Zip__c ,Delivery_State_Province__c ,Delivery_City__c ,Delivery_Street__c,Delivery_Street2__c  ,AAccountccount__c,Status__c,Confirmed_Pick_Up_Date__c,Comments_Helper__c,Phone_Number_2__c,Phone_Number_22__c      FROM Dumpsters__c where id = :dumpID ] ;
+      
+            NewDumpsterRecord.AAccountccount__c=OldDumpsterRecord.AAccountccount__c;
+            NewDumpsterRecord.Status__c ='Unscheduled';
+            NewDumpsterRecord.Drop_Off_Visit_Date__c =OldDumpsterRecord.Confirmed_Pick_Up_Date__c;
+            NewDumpsterRecord.Comments_Helper__c =OldDumpsterRecord.Comments_Helper__c;
+            NewDumpsterRecord.Phone_Number_2__c =OldDumpsterRecord.Phone_Number_2__c;
+            NewDumpsterRecord.Phone_Number_22__c =OldDumpsterRecord.Phone_Number_22__c;
+            NewDumpsterRecord.Delivery_Street__c =OldDumpsterRecord.Delivery_Street__c;
+            NewDumpsterRecord.Delivery_Street2__c =OldDumpsterRecord.Delivery_Street2__c;
+            NewDumpsterRecord.Delivery_City__c =OldDumpsterRecord.Delivery_City__c;
+            NewDumpsterRecord.Delivery_State_Province__c =OldDumpsterRecord.Delivery_State_Province__c;
+            NewDumpsterRecord.Delivery_Zip__c =OldDumpsterRecord.Delivery_Zip__c;
+            NewDumpsterRecord.Estimated_GP__c =OldDumpsterRecord.Estimated_GP__c;
+            NewDumpsterRecord.Rental__c =OldDumpsterRecord.Rental__c;
+            NewDumpsterRecord.Per_Ton_Charge__c=OldDumpsterRecord.Per_Ton_Charge__c;
+            NewDumpsterRecord.Dumpster_Size__c=OldDumpsterRecord.Dumpster_Size__c;
+            NewDumpsterRecord.Recurring__c =OldDumpsterRecord.Recurring__c;
+            NewDumpsterRecord.Proposal_Lost_Reason__c =OldDumpsterRecord.Proposal_Lost_Reason__c;
+            NewDumpsterRecord.Pick_Up_Driver__c =OldDumpsterRecord.Pick_Up_Driver__c;
+            NewDumpsterRecord.Pick_Up_Driver_Lkp__c =OldDumpsterRecord.Pick_Up_Driver_Lkp__c;
+            NewDumpsterRecord.Driver__c =OldDumpsterRecord.Pick_Up_Driver__c;
+            NewDumpsterRecord.Drop_of_Driver_Lkp__c =OldDumpsterRecord.Pick_Up_Driver_Lkp__c;
+            NewDumpsterRecord.Pdf_Parser_Delivery_Address__c =OldDumpsterRecord.Pdf_Parser_Delivery_Address__c;
+            NewDumpsterRecord.Concrete_Only__c =OldDumpsterRecord.Concrete_Only__c;
+            NewDumpsterRecord.Invoicing_Comments__c =OldDumpsterRecord.Invoicing_Comments__c;
+            NewDumpsterRecord.Tonnage_Quantity__c =OldDumpsterRecord.Tonnage_Quantity__c;
+            NewDumpsterRecord.Sales_Tax__c =OldDumpsterRecord.Sales_Tax__c;
+            NewDumpsterRecord.Haulbrooke_Regional_Base__c =OldDumpsterRecord.Haulbrooke_Regional_Base__c;
+            NewDumpsterRecord.Contractor_Name_For_Gate__c =OldDumpsterRecord.Contractor_Name_For_Gate__c;
+            NewDumpsterRecord.Fill_Details__c = OldDumpsterRecord.Fill_Details__c; 
+            NewDumpsterRecord.Comments__c = OldDumpsterRecord.Comments__c ;
+            NewDumpsterRecord.Is_Cloning__c = true;
+        }
+    }
+   
+   
+    public PageReference dosave()
+    {
+       // Dumpsters__c clonedSummary = OldDumpsterRecord.clone(false,false,false,false);
+        
+        try
+        {
+        insert NewDumpsterRecord;
+        return new PageReference('/' + NewDumpsterRecord.Id);
+        }
+        catch(exception e)
+        {
+            system.debug('Exception >'+e);
+        }
+        return null;
+    }
+
+}

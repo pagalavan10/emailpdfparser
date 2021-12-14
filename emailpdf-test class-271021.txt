@@ -1,0 +1,1957 @@
+@isTest
+public class EmailPDFParsingHandlerTest{
+    static testMethod void TestemailPDFParsing(){
+               
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Create Contact';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'email body\n2225256325\nTitle';
+        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Cleanup Contractors LLC';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Cleanup Contractors LLC',ac.name);
+       
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        pdftestac.TestAccountid__c=ac.id;
+        insert pdftestac;
+        
+        Pdf_Parser_Other_Notification__c pd = new Pdf_Parser_Other_Notification__c();
+        pd.Name = 'Other Notes';
+        pd.ToAddress__c = 'test@gmail.com';
+        insert pd;
+        System.assertequals('Other Notes',pd.name);
+                                  
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19038642_1551105661056.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        Test.stopTest();
+    }
+    static testMethod void TestingemailPDFParsing(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Final Pick Up';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'Hello Operations:Please Schedule Final Pick Up - *TUESDAY* 3/5/2019 - 1622 W Thorain Blvd San Antonio TX 78201 San Antonio (TX) - HB - - 40 yard dumpster rental PO # 19038767  If you are unable to remove the dumpster for any reason whatsoever; cars blocking, overloaded, locked gates, etc., please always make sure to first call our onsite contact listed below and then call the office number for Cleanup Contractors before the driver leaves.  Most times we will be able to resolve the issue while your driver is on site. On Site Contact: Jimmy Smith:  1 (210) 236-8718 Cleanup Contractors office: 1-866-557-9146 Please confirm that this request is on schedule.Best, Katelyn C. (866)557-9146';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Cleanup Contract';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Cleanup Contract',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19042998_1551797637743.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    } 
+    
+    static testMethod void TestingemailPDFParsingFinalpickup()
+    {
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Final Pick Up';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'Regards,Karthikeyan TMerfantz Technologies Pvt. Ltd.  NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not shareor use without Merfantz\'s approval.  If received in error, please contact the sender and delete the email and any attachments From: noreply@salesforce.com [mailto:noreply@salesforce.com] On Behalf Of HaulbrookeSent: Tuesday, June 23, 2020 11:53 PMTo: tkarthikeyan@merfantz.inSubject: *SPECIAL REQUEST* Final Pick Up - 6001 South Presa Street San Antonio Texas 78223   <https://www.dumpsters.com/images/cleanup-contractors-logo-white.png>  Final Pickup Request 6001 South Presa Street San Antonio Texas, 78223   Pickup Date: 06/24/2020Product(s):  HB - - 40 yard dumpster rentalOrder Reference: 00061654PO Number: 19302496Special Instructions: **GATED MUST CALL***Call Pete 30 mins prior 1 (210) 992-7335    Please confirm that this request in on schedule.  <https://hauler-portal.dumpsters.com/order-management/fulfillment-confirmation/69c08be1-13db-1e33-ae77-012480430255> Go ToConfirmation Page If you are unable to remove the dumpster for any reason whatsoever; cars blocking, overloaded, locked gates, etc., please alwaysmake sure to first call our onsite contact listed below and then call the office number for Cleanup Contractors before the driverleaves. Most times we will be able to resolve the issue while your driver is on site. Onsite Contact: Heather - 18178792755 Cleanup Contractors office: 1-(866) 557-9146                                     Krystal Castner Cleanup ContractorsOffice  <tel:8665579146> (866)557-9146 ref:_00D1N1QxPJ._5003m12PLA4:refKind Regards, Warren Bidmead Haulbrooke, 113 Pecan Drive, Schertz, TX, 78154 210-819-9632  <https://haulbrooke--c.na77.content.force.com/servlet/servlet.ImageServer?id=0151M00000SneHh&oid=00D4600000169Rm&lastMod=1592399721000>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Cleanup Contract';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Cleanup Contract',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19042998_1551797637743.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    } 
+    
+    static testMethod void PDFParsing(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'New PO INV-15713 from Liberty Dumpster Rental';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br> <br><br>Regards,<br><br>Ajeeth Kumar S<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share or use without MerfantzΓÇÖs approval.  If received in error, please contact the sender and delete the email and any attachments<br><br> <br><br>From: Liberty Dumpster [mailto:orders@libertydumpster.com] <br>Sent: Tuesday, March 26, 2019 1:28 AM<br>To: Operations@haul-brooke.com<br>Subject: New PO INV-15696 from Liberty Dumpster Rental<br><br> <br><br><br>Operations@haul-brooke.com <mailto:Operations@haul-brooke.com>  <br><br><br>Original PO:  PO INV-15696 from Liberty Dumpster Rental<br><br>DELIVERY ADDRESS:  <br>10423 Harbor Springs St San Antonio, TX, 78245<br>Israel Teran  210-716-7124<br><br>SIZE, DEBRIS TYPE, PLACEMENT/PERMIT: <br>10yd,  driveway<br><br>DELIVERY DATE & TIME:  <br>Tuesday, March 26, 2019  from  7:00pm-12:00PM<br><br>PICKUP DATE: <br>Monday, April 01, 2019<br><br>We appreciate all that you do for us!<br><br>Admin<br><br>Please call or email if you need more information.<br>Liberty Dumpster Rental Customer Service - (210) 775-0750<br>orders@libertydumpster.com <mailto:orders@libertydumpster.com> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Liberty Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Liberty Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19081595_1556917636934.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsing2(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'New PO INV-15713 from Liberty Dumpster Rental';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br> <br><br>Regards,<br><br>Ajeeth Kumar S<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share or use without MerfantzΓÇÖs approval.  If received in error, please contact the sender and delete the email and any attachments<br><br> <br><br>From: Liberty Dumpster [mailto:orders@libertydumpster.com] <br>Sent: Tuesday, March 26, 2019 1:28 AM<br>To: Operations@haul-brooke.com<br>Subject: New PO INV-15696 from Liberty Dumpster Rental<br><br> <br><br><br>Operations@haul-brooke.com <mailto:Operations@haul-brooke.com>  <br><br><br>Original PO:  PO INV-15696 from Liberty Dumpster Rental<br><br>DELIVERY ADDRESS:  <br>10423 Harbor Springs St San Antonio, TX, 78245<br>Israel Teran  210-716-7124<br><br>SIZE, DEBRIS TYPE, PLACEMENT/PERMIT: <br>40yd,  driveway<br><br>DELIVERY DATE & TIME:  <br>Tuesday, March 26, 2019  from  7am-12am<br><br>PICKUP DATE: <br>Monday, April 01, 2019<br><br>We appreciate all that you do for us!<br><br>Admin<br><br>Please call or email if you need more information.<br>Liberty Dumpster Rental Customer Service - (210) 775-0750<br>orders@libertydumpster.com <mailto:orders@libertydumpster.com> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Liberty Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Liberty Dumpster',ac.name);
+        
+        PDF_Parser_Email__c PDFEmail = new PDF_Parser_Email__c();
+        PDFEmail.Name = 'Cleanup';
+        PDFEmail.Account_Id__c= ac.Id;
+        PDFEmail.Email__c = 'test@gmail.com';
+        Insert PDFEmail;
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19081595_1556917636934.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    
+    static testMethod void PDFParsing3(){
+        
+        
+       Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'New Delivery 40 Yard SA 535 Denver Boulevard   San Antonio, TX 78210 (PO#) CH66077';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br>Hello,<br><br>We are ready for a SWAP OUT.<br><br>Please confirm you have received this email as well. <br><br>Thank you in advance!<br><br>Chris H<br>Affordable Dumpster Rental <br><br> <br><br><br>NEW DELIVERY - PO# CH66077 <br><br><br>PLEASE DO NOT PICK UP/EXCHANGE/DELIVER WITHOUT AFFORDABLE DUMPSTER RENTALS<br>PERMISSION<br><br>PLEASE ALWAYS MAKE AN EFFORT TO CALL CUSTOMER 1 HOUR PRIOR TO ARRIVAL<br><br> <br><br><br>ORDER INFORMATION - PO# CH66077 <br><br><br>Order Details<br><br>Service Address<br><br><br>Point of Contact<br><br>Shane Hudson<br><br>535 Denver Boulevard<br><http://maps.google.com/maps?q=535+Denver+Boulevard+San%20Antonio,+TX+78210><br><br>San Antonio, TX 78210<br><br><br><br>Phone<br><br>(775) 354-7770 <tel:(775)%20354-7770> <br><br><br>Desired Delivery Date<br><br>1/09/2019 <br><br><br>Size<br><br>40YYard SA<br><br><br>Debris<br><br>Construction <br><br><br>Specific Placement<br><br><br>On the driveway towards the back of the house. On-site contact, if you need<br>help with placement Enrique Rodriguez 210-992-0669<br><br> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Affordable Dumpsters';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Affordable Dumpsters',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+       
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    } 
+    
+    static testMethod void PDFParsingSwapoutAffordable(){
+        
+        
+       Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = '- Swap Out 40 Yard SA 535 Denver Boulevard   San Antonio, TX 78210 (PO#) CH66077';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br>Hello,<br><br>We are ready for a SWAP OUT.<br><br>Please confirm you have received this email as well. <br><br>Thank you in advance!<br><br>Chris H<br>Affordable Dumpster Rental <br><br> <br><br><br>SWAP OUT - PO# CH66077 <br><br><br>PLEASE DO NOT PICK UP/EXCHANGE/DELIVER WITHOUT AFFORDABLE DUMPSTER RENTALS<br>PERMISSION<br><br>PLEASE ALWAYS MAKE AN EFFORT TO CALL CUSTOMER 1 HOUR PRIOR TO ARRIVAL<br><br> <br><br><br>ORDER INFORMATION - PO# CH66077 <br><br><br>Order Details<br><br>Service Address<br><br><br>Point of Contact<br><br>Shane Hudson<br><br>535 Denver Boulevard<br><http://maps.google.com/maps?q=535+Denver+Boulevard+San%20Antonio,+TX+78210><br><br> San Antonio, TX 78210<br><br><br><br>Phone<br><br>(775) 354-7770 <tel:(775)%20354-7770> <br><br><br>Desired Delivery Date<br><br>1/09/2019 <br><br><br>Size<br><br>40 Yard SA<br><br><br>Debris<br><br>Construction <br><br><br>Specific Placement<br><br><br>On the driveway towards the back of the house. On-site contact, if you need<br>help with placement Enrique Rodriguez 210-992-0669<br><br> <br><br>';
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Affordable Dumpsters';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Affordable Dumpsters',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+        Container_Assets__c ContainerAsset1 = new Container_Assets__c();
+        ContainerAsset1.Status__c ='Active';
+        ContainerAsset1.Size__c = '30 Yard';
+        insert ContainerAsset1;
+        
+        Dumpsters__c Dumpster1 = new Dumpsters__c();
+        Dumpster1.Pdf_Parser_Delivery_Address__c = '535 Denver Boulevard, San Antonio, TX 78210';
+        Dumpster1.Status__c = 'Drop Off Complete';
+        Dumpster1.Dumpster_Size__c = '30yd';
+        Dumpster1.AAccountccount__c = ac.id;
+        Dumpster1.Container_Asset__c = ContainerAsset1.id;
+        Dumpster1.Drop_Off_Visit_Date__c = system.today();
+        Dumpster1.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster1.Driver__c = 'Warren';
+        Dumpster1.Pick_Up_Driver__c = 'Warren';
+        Dumpster1.Purchase_Order__c = 'CH54326';
+        insert Dumpster1;
+                
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    } 
+     
+    
+    
+    static testMethod void PDFParsing4(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Create Contact';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'email body\n2225256325\nTitle';
+        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Cleanup Contractors LLC';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Cleanup Contractors LLC',ac.name);
+       
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        pdftestac.TestAccountid__c=ac.id;
+        insert pdftestac;
+        
+        Pdf_Parser_Other_Notification__c pd = new Pdf_Parser_Other_Notification__c();
+        pd.Name = 'Other Notes';
+        pd.ToAddress__c = 'test@gmail.com';
+        insert pd;
+        System.assertequals('Other Notes',pd.name);
+                                  
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19038642_1551105661056.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator1());
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        Test.stopTest();
+    } 
+    
+    static testMethod void PDFParsing5(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'New PO INV-15713 from Liberty Dumpster Rental ';
+        email.fromAddress = 'someaddress@email.com';
+        email.htmlbody= '<br><br> <br><br>Regards,<br><br>Ajeeth Kumar S<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share or use without MerfantzΓÇÖs approval.  If received in error, please contact the sender and delete the email and any attachments<br><br> <br><br>From: Liberty Dumpster [mailto:orders@libertydumpster.com] <br>Sent: Tuesday, March 26, 2019 1:28 AM<br>To: Operations@haul-brooke.com<br>Subject: New PO INV-15696 from Liberty Dumpster Rental<br><br> <br><br><br>Operations@haul-brooke.com <mailto:Operations@haul-brooke.com>  <br><br><br>Original PO:  PO INV-15696 from Liberty Dumpster Rental<br><br>DELIVERY ADDRESS:  <br>5507 Queensloch Drive Houston Texas , 77096<br>Israel Teran  210-716-7124<br><br>SIZE, DEBRIS TYPE, PLACEMENT/PERMIT: <br>30yd,  driveway<br><br>DELIVERY DATE & TIME:  <br>Tuesday, March 26, 2019  from  7am-12am<br><br>PICK DATE: <br>Monday, April 01, 2019<br><br>We appreciate all that you do for us!<br><br>Admin<br><br>Please call or email if you need more information.<br>Liberty Dumpster Rental Customer Service - (210) 775-0750<br>orders@libertydumpster.com <mailto:orders@libertydumpster.com> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Liberty Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Liberty Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+        Dumpsters__c Dumpster2 = new Dumpsters__c();
+        Dumpster2.Pdf_Parser_Delivery_Address__c = '7935 Fairbanks-White Oak Road Houston TX, 77040';
+        Dumpster2.Status__c = 'Unscheduled';
+        Dumpster2.Dumpster_Size__c = '30yd';
+        Dumpster2.AAccountccount__c = ac.id;
+       // Dumpster2.Container_Asset__c = ContainerAsset1.id;
+        Dumpster2.Drop_Off_Visit_Date__c = system.today();
+        Dumpster2.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster2.Driver__c = 'Eddie Hysquierdo';
+        Dumpster2.Pick_Up_Driver__c = 'Eddie Hysquierdo';
+        Dumpster2.Purchase_Order__c = 'INV54327';
+        insert Dumpster2;
+        
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsing6(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'New Delivery 40 Yard SA 535 Denver Boulevard   San Antonio, TX 78210 (PO#) CH66077';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br>Hello,<br><br>We are ready for a SWAP OUT.<br><br>Please confirm you have received this email as well. <br><br>Thank you in advance!<br><br>Chris H<br>Affordable Dumpster Rental <br><br> <br><br><br>NEW DELIVERY - PO# CH66077 <br><br><br>PLEASE DO NOT PICK UP/EXCHANGE/DELIVER WITHOUT AFFORDABLE DUMPSTER RENTALS<br>PERMISSION<br><br>PLEASE ALWAYS MAKE AN EFFORT TO CALL CUSTOMER 1 HOUR PRIOR TO ARRIVAL<br><br> <br><br><br>ORDER INFORMATION - PO# CH66077 <br><br><br>Order Details<br><br>Service Address<br><br><br>Point of Contact<br><br>Shane Hudson<br><br>535 Denver Boulevard<br><http://maps.google.com/maps?q=535+Denver+Boulevard+San%20Antonio,+TX+78210><br><br>San Antonio, TX 78210<br><br><br><br>Phone<br><br>(775) 354-7770 <tel:(775)%20354-7770> <br><br><br>Desired Delivery Date<br><br>1/09/2019 <br><br><br>Size<br><br>40 Yard SA<br><br><br>Debris<br><br>Construction <br><br><br>Specific Placement<br><br><br>On the driveway towards the back of the house. On-site contact, if you need<br>help with placement Enrique Rodriguez 210-992-0669<br><br> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Affordable Dumpsters';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Affordable Dumpsters',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+       
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+     static testMethod void PDFParsing7(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Swap Out 40 Yard SA 535 Denver Boulevard   San Antonio, TX 78210 (PO#) CH66077';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br>Hello,<br><br>We are ready for a SWAP OUT.<br><br>Please confirm you have received this email as well. <br><br>Thank you in advance!<br><br>Chris H<br>Affordable Dumpster Rental <br><br> <br><br><br>NEW DELIVERY - PO# CH66077 <br><br><br>PLEASE DO NOT PICK UP/EXCHANGE/DELIVER WITHOUT AFFORDABLE DUMPSTER RENTALS<br>PERMISSION<br><br>PLEASE ALWAYS MAKE AN EFFORT TO CALL CUSTOMER 1 HOUR PRIOR TO ARRIVAL<br><br> <br><br><br>ORDER INFORMATION - PO# CH66077 <br><br><br>Order Details<br><br>Service Address<br><br><br>Point of Contact<br><br>Shane Hudson<br><br>535 Denver Boulevard<br><http://maps.google.com/maps?q=535+Denver+Boulevard+San%20Antonio,+TX+78210><br><br>San Antonio, TX 78210<br><br><br><br>Phone<br><br>(775) 354-7770 <tel:(775)%20354-7770> <br><br><br>Desired Delivery Date<br><br>1/09/2019 <br><br><br>Size<br><br>30 Yard SA<br><br><br>Debris<br><br>Construction <br><br><br>Specific Placement<br><br><br>On the driveway towards the back of the house. On-site contact, if you need<br>help with placement Enrique Rodriguez 210-992-0669<br><br> <br><br>';        
+        //email.htmlbody = '<br><br>Hello,<br><br>We are ready for a SWAP OUT.<br><br>Please confirm you have received this email as well. <br><br>Thank you in advance!<br><br>Chris H<br>Affordable Dumpster Rental <br><br> <br><br><br>SWAP OUT - PO# CH66077 <br><br><br>PLEASE DO NOT PICK UP/EXCHANGE/DELIVER WITHOUT AFFORDABLE DUMPSTER RENTALS<br>PERMISSION<br><br>PLEASE ALWAYS MAKE AN EFFORT TO CALL CUSTOMER 1 HOUR PRIOR TO ARRIVAL<br><br> <br><br><br>ORDER INFORMATION - PO# CH66077 <br><br><br>Order Details<br><br>Service Address<br><br><br>Point of Contact<br><br>Shane Hudson<br><br>535 Denver Boulevard<br><http://maps.google.com/maps?q=535+Denver+Boulevard+San%20Antonio,+TX+78210><br><br>San Antonio, TX 78210<br><br><br><br>Phone<br><br>(775) 354-7770 <tel:(775)%20354-7770> <br><br><br>Desired Delivery Date<br><br>1/09/2019 <br><br><br>Size<br><br>30 Yard SA<br><br><br>Debris<br><br>Construction <br><br><br>Specific Placement<br><br><br>On the driveway towards the back of the house. On-site contact, if you need<br>help with placement Enrique Rodriguez 210-992-0669<br><br> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Affordable Dumpsters';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Affordable Dumpsters',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+       
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+     static testMethod void PDFParsing7_1(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Swap Out 40 Yard SA 535 Denver Boulevard   San Antonio, TX 78210 (PO#) CH66077';
+        email.fromAddress = 'someaddress@email.com';
+        //email.plainTextBody = '<br><br>Hello,<br><br>We are ready for a SWAP OUT.<br><br>Please confirm you have received this email as well. <br><br>Thank you in advance!<br><br>Chris H<br>Affordable Dumpster Rental <br><br> <br><br><br>SWAP OUT - PO# CH66077 <br><br><br>PLEASE DO NOT PICK UP/EXCHANGE/DELIVER WITHOUT AFFORDABLE DUMPSTER RENTALS<br>PERMISSION<br><br>PLEASE ALWAYS MAKE AN EFFORT TO CALL CUSTOMER 1 HOUR PRIOR TO ARRIVAL<br><br> <br><br><br>ORDER INFORMATION - PO# CH66077 <br><br><br>Order Details<br><br>Service Address<br><br><br>Point of Contact<br><br>Shane Hudson<br><br>535 Denver Boulevard<br><http://maps.google.com/maps?q=535+Denver+Boulevard+San%20Antonio,+TX+78210><br><br>San Antonio, TX 78210<br><br><br><br>Phone<br><br>(775) 354-7770 <tel:(775)%20354-7770> <br><br><br>Desired Delivery Date<br><br>1/09/2019 <br><br><br>Size<br><br>30 Yard SA<br><br><br>Debris<br><br>Construction <br><br><br>Specific Placement<br><br><br>On the driveway towards the back of the house. On-site contact, if you need<br>help with placement Enrique Rodriguez 210-992-0669<br><br> <br><br>';        
+        email.htmlbody = '<br><br>Hello,<br><br>We are ready for a SWAP OUT.<br><br>Please confirm you have received this email as well. <br><br>Thank you in advance!<br><br>Chris H<br>Affordable Dumpster Rental <br><br> <br><br><br>NEW DELIVERY - PO# CH66077 <br><br><br>PLEASE DO NOT PICK UP/EXCHANGE/DELIVER WITHOUT AFFORDABLE DUMPSTER RENTALS<br>PERMISSION<br><br>PLEASE ALWAYS MAKE AN EFFORT TO CALL CUSTOMER 1 HOUR PRIOR TO ARRIVAL<br><br> <br><br><br>ORDER INFORMATION - PO# CH66077 <br><br><br>Order Details<br><br>Service Address<br><br><br>Point of Contact<br><br>Shane Hudson<br><br>535 Denver Boulevard<br><http://maps.google.com/maps?q=535+Denver+Boulevard+San%20Antonio,+TX+78210><br><br>San Antonio, TX 78210<br><br><br><br>Phone<br><br>(775) 354-7770 <tel:(775)%20354-7770> <br><br><br>Desired Delivery Date<br><br>1/09/2019 <br><br><br>Size<br><br>30 Yard SA<br><br><br>Debris<br><br>Construction <br><br><br>Specific Placement<br><br><br>On the driveway towards the back of the house. On-site contact, if you need<br>help with placement Enrique Rodriguez 210-992-0669<br><br> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Affordable Dumpsters';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Affordable Dumpsters',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+       
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    static testMethod void LeadPDFParsing(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'New Enquiry from www.haulbrooke.com';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'Dear Sir/Ma'+' am,<br><br>A visitor has tried to  <https://www.zealthdoc.com/dumster/wp-admin/post.php?post=16&action=edit> Get a Quote ( <http://drabhideep.com/> http://www.haulbroke.com) <br><br>Below are the details of the same:-<br><br><br>Full Name:<br><br>Marci Taylor <br><br><br>Email:<br><br>marcitaylor1971@gmail.com <mailto:marcitaylor1971@gmail.com> <br><br><br>Phone:<br><br>2108638362 <br><br><br>Size of Dumpster required? :<br><br>20<br><br><br>Number of Days Dumpster Required:<br><br>1<br><br><br>When do you need the dumpster?:<br><br>In-a-fewweeks<br><br>--<br><br>Regards<br><br>Marci Taylor <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Liberty Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Liberty Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=true;
+        insert pdftestac;
+                                
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19081595_1556917636934.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    //my code
+    
+    static testMethod void m1(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Get a Quote - new submission www.haulbrooke.com';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'Dear Sir/Ma'+' am,<br><br>A visitor has tried to  <https://www.zealthdoc.com/dumster/wp-admin/post.php?post=16&action=edit> Get a Quote ( <http://drabhideep.com/> http://www.haulbroke.com) <br><br>Below are the details of the same:-<br><br><br>Full Name:<br><br>Marci Taylor <br><br><br>Email:<br><br>marcitaylor1971@gmail.com <mailto:marcitaylor1971@gmail.com> <br><br><br>Phone:<br><br>2108638362 <br><br><br>Size of Dumpster required? :<br><br>20<br><br><br>Number of Days Dumpster Required:<br><br>1<br><br><br>When do you need the dumpster?:<br><br>In-a-fewweeks<br><br>--<br><br>Regards<br><br>Marci Taylor <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Liberty Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Liberty Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=true;
+        insert pdftestac;
+                                
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19081595_1556917636934.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator4());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    
+    static testMethod void m2(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'smsmsms';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'Dear Sir/Ma'+' am,<br><br>A visitor has tried to  <https://www.zealthdoc.com/dumster/wp-admin/post.php?post=16&action=edit> Get a Quote ( <http://drabhideep.com/> http://www.haulbroke.com) <br><br>Below are the details of the same:-<br><br><br>Full Name:<br><br>Marci Taylor <br><br><br>Email:<br><br>marcitaylor1971@gmail.com <mailto:marcitaylor1971@gmail.com> <br><br><br>Phone:<br><br>2108638362 <br><br><br>Size of Dumpster required? :<br><br>20<br><br><br>Number of Days Dumpster Required:<br><br>1<br><br><br>When do you need the dumpster?:<br><br>In-a-fewweeks<br><br>--<br><br>Regards<br><br>Marci Taylor <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Liberty Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Liberty Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=true;
+        insert pdftestac;
+                                
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19081595_1556917636934.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void m3(){
+        
+          
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Create Contact';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'email body\n2225256325\nTitle';
+        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Cleanup Contractors LLC';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Cleanup Contractors LLC',ac.name);
+       
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        pdftestac.TestAccountid__c=ac.id;
+        insert pdftestac;
+        
+        Pdf_Parser_Other_Notification__c pd = new Pdf_Parser_Other_Notification__c();
+        pd.Name = 'Other Notes';
+        pd.ToAddress__c = 'test@gmail.com';
+        insert pd;
+        System.assertequals('Other Notes',pd.name);
+                                  
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19038642_1551105661056.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator4());
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        Test.stopTest();
+    }
+    
+    static testMethod void m5(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'New PO INV-15713 from Liberty Dumpster Rental ';
+        email.fromAddress = 'someaddress@email.com';
+        email.htmlbody= '<br><br> <br><br>Regards,<br><br>Ajeeth Kumar S<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share or use without MerfantzΓÇÖs approval.  If received in error, please contact the sender and delete the email and any attachments<br><br> <br><br>From: Liberty Dumpster [mailto:orders@libertydumpster.com] <br>Sent: Tuesday, March 26, 2019 1:28 AM<br>To: Operations@haul-brooke.com<br>Subject: New PO INV-15696 from Liberty Dumpster Rental<br><br> <br><br><br>Operations@haul-brooke.com <mailto:Operations@haul-brooke.com>  <br><br><br>Original PO:  PO INV-15696 from Liberty Dumpster Rental<br><br>DELIVERY ADDRESS:  <br>5507 Queensloch Drive Houston Texas , 77096<br>Israel Teran  210-716-7124<br><br>SIZE, DEBRIS TYPE, PLACEMENT/PERMIT: <br>30yd,  driveway<br><br>DELIVERY DATE & TIME:  <br>Tuesday, March 26, 2019  from  7am-12am<br><br>PICK DATE: <br>Monday, April 01, 2019<br><br>We appreciate all that you do for us!<br><br>Admin<br><br>Please call or email if you need more information.<br>Liberty Dumpster Rental Customer Service - (210) 775-0750<br>orders@libertydumpster.com <mailto:orders@libertydumpster.com> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Liberty Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Liberty Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+        Dumpsters__c Dumpster2 = new Dumpsters__c();
+        Dumpster2.Pdf_Parser_Delivery_Address__c = '7935 Fairbanks-White Oak Road Houston TX, 77040';
+        Dumpster2.Status__c = 'Unscheduled';
+        Dumpster2.Dumpster_Size__c = '30yd';
+        Dumpster2.AAccountccount__c = ac.id;
+       // Dumpster2.Container_Asset__c = ContainerAsset1.id;
+        Dumpster2.Drop_Off_Visit_Date__c = system.today();
+        Dumpster2.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster2.Driver__c = 'Eddie Hysquierdo';
+        Dumpster2.Pick_Up_Driver__c = 'Eddie Hysquierdo';
+        Dumpster2.Purchase_Order__c = 'INV54327';
+        insert Dumpster2;
+        
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        //testInbound.handleInboundEmail(email, env); 
+        //EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        EmailPDFParsingHandler.send_Reply(new List<Id>{Dumpster2.Id},  email);
+        Test.stopTest();
+    }
+
+    
+    static testMethod void m4(){
+        
+          
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Create Contact';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'br><br>Hello, <br><br>Will you please Schedule and Confirm the New Delivery below.<br><br>We kindly request an email response to Confirm or Deny as soon as possible.<br><br>Purchase Order &#124; O-24043 <br> <br><br><br>Order TypeProduct Name<br><br>Delivery Date<br><br>Pick Up Date<br><br><br>New Delivery<br><br>30 Yard Dumpster<br><br>11/30/2020 00:00:00<br><br>12/14/2020 00:00:00<br><br>  <br><br><br>Delivery Address<br><br>Contact Information Discount Dumpster<br><br>Placement Information<br><br>Placement Dimensions<br><br><br>1 Trinity Place<br><br>San Antonio, TX 78212 <br><br>Adriana Garza<br><br>(210) 434-4185<br><br>place just east of the Halsell Centre on campus as pictured:<br>https://tinyurl.com/yxsmyao3 CONTACT RYAN BENTLEY AT 2105595094 FOR<br>PLACEMENT IF POSSIBLE<br><br><br>';
+        
+        
+        Account ac = new Account();
+        ac.Name = 'Discount Dumpster Rental';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Discount Dumpster Rental',ac.name);
+        
+        ParserPDFTestAccount__c PDFTestAccount=new ParserPDFTestAccount__c();
+        PDFTestAccount.name='PDFTestAccount';
+        PDFTestAccount.EnableTestAccount__c=true;
+        
+        insert PDFTestAccount;
+        
+        /*Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '20 Yard';
+        insert ContainerAsset;*/
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '16530 Huebner Rd, San Antonio, TX 78248';
+        Dumpster.Status__c = 'Request for Pick-Up';
+        Dumpster.Dumpster_Size__c = '20yd';
+        Dumpster.AAccountccount__c = ac.id;
+        //Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = '945616871';
+        insert Dumpster;
+       
+        attachment attch= new attachment();
+        attch.body = blob.valueOf('Hello');
+        attch.ContentType = 'application/vnd.ms-outlook';
+        attch.ParentId     = dumpster.Id;
+        
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        pdftestac.TestAccountid__c=ac.id;
+        insert pdftestac;
+        
+        Pdf_Parser_Other_Notification__c pd = new Pdf_Parser_Other_Notification__c();
+        pd.Name = 'Other Notes';
+        pd.ToAddress__c = 'test@gmail.com';
+        insert pd;
+        System.assertequals('Other Notes',pd.name);
+                                  
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19038642_1551105661056.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator4());
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        EmailPDFParsingHandler.DumpsterNewDelivery(email.plainTextBody , email); 
+        Test.stopTest();
+    }
+    
+    static testMethod void m6(){
+        
+          
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Create Contact';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'br><br>Hello, <br><br>Will you please Schedule and Confirm the New Delivery below.<br><br>We kindly request an email response to Confirm or Deny as soon as possible.<br><br>Purchase Order &#124; O-24043 <br> <br><br><br>Order TypeProduct Name<br><br>Delivery Date<br><br>Pick Up Date<br><br><br>New Delivery<br><br>30 Yard Dumpster<br><br>11/30/2020 00:00:00<br><br>12/14/2020 00:00:00<br><br>  <br><br><br>Delivery Address<br><br>Contact Information Discount Dumpster<br><br>Placement Information<br><br>Placement Dimensions<br><br><br>1 Trinity Place<br><br>San Antonio, TX 78212 <br><br>Adriana Garza<br><br>(210) 434-4185<br><br>place just east of the Halsell Centre on campus as pictured:<br>https://tinyurl.com/yxsmyao3 CONTACT RYAN BENTLEY AT 2105595094 FOR<br>PLACEMENT IF POSSIBLE<br><br><br>';
+        
+        
+        Account ac = new Account();
+        ac.Name = 'Discount Dumpster Rental';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Discount Dumpster Rental',ac.name);
+        
+        
+        
+        /*Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '20 Yard';
+        insert ContainerAsset;*/
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '16530 Huebner Rd, San Antonio, TX 78248';
+        Dumpster.Status__c = 'Request for Pick-Up';
+        Dumpster.Dumpster_Size__c = '20yd';
+        Dumpster.AAccountccount__c = ac.id;
+        //Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = '945616871';
+        insert Dumpster;
+       
+        attachment attch= new attachment();
+        attch.body = blob.valueOf('Hello');
+        attch.ContentType = 'application/vnd.ms-outlook';
+        attch.ParentId     = dumpster.Id;
+        
+        Pdf_Parser_Other_Notification__c pd = new Pdf_Parser_Other_Notification__c();
+        pd.Name = 'Other Notes';
+        pd.ToAddress__c = 'test@gmail.com';
+        insert pd;
+        System.assertequals('Other Notes',pd.name);
+                                  
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19038642_1551105661056.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator4());
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        EmailPDFParsingHandler.DumpsterNewDelivery(email.plainTextBody , email); 
+        Test.stopTest();
+    }
+    
+    static testMethod void m7(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = '30 yard swap - 9738 Hidden Falls - 10/25';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br> <br><br> <br><br> <br><br> <br><br>Regards,<br><br>Karthikeyan T<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and<br>is solely for the intended addressee(s).  Do not share or use without<br>Merfantz\'s approval.  If received in error, please contact the sender and<br>delete the email and any attachments<br><br> <br><br>From: noreply@salesforce.com [mailto:noreply@salesforce.com] On Behalf Of<br>Haulbrooke<br>Sent: Tuesday, March 31, 2020 12:34 AM<br>To: tkarthikeyan@merfantz.in<br>Subject: 20 yard swap - 16530 huebner Rd - 3/30<br><br> <br><br> <br><br>Hello, can you please schedule and confirm the following for 3/30?<br><br> <br><br>Thank you <br><br> <br><br>P.O. 018253<br><br><br>78248 - 20 cubic yard container,Extra Week <br><br>Dates: <br>30 Mar 2020 Swap <br>13 Apr 2020 Pickup <br><br>Delivery Address: <br>16530 Huebner Rd, San Antonio, TX 78248 <br><br>Onsite Contact: <br>MZ Contracting <br>210-322-2370 <br>PLEASE CALL OUR OFFICE WITH ANY ISSUES 804-223-1300 <br><br>Placement Instructions: <br>Call ahead. MUST DELIVER AFTER 7:30AM CALL Pete for placement 830-230-5626 <br><br>Dumpster Contents:<br>construction debris <br><br>================================================================ <br>Discount 1Dumpster <br>(804) 223-1300 <br>dispatch@discountdumpsterco.com <mailto:dispatch@discountdumpsterco.com>  <br><br>';
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Discount Dumpster Rentaltest';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        //System.assertequals('Discount Dumpster Rental',ac.name);
+        
+        Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '20 Yard';
+        insert ContainerAsset;
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '16530 Huebner Rd, San Antonio, TX 78248';
+        Dumpster.Status__c = 'Request for Pick-Up';
+        Dumpster.Dumpster_Size__c = '20yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = '945616871';
+        insert Dumpster;
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        //insert pdftestac;
+                                
+        system.debug(Dumpster);
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorDiscount());
+        Test.startTest();
+        EmailPDFParsingHandler testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    //mycode 
+    
+    static testMethod void TestemailPDFInvoiceParsing(){
+               
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Payment Receipt 03572G from Haul-Brooke Inc';
+        email.fromAddress = 'someaddress@email.com';
+        email.htmlbody = 'email body\n2225256325\nTitle';
+        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Cleanup Contractors LLC';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Cleanup Contractors LLC',ac.name);
+       
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        pdftestac.TestAccountid__c=ac.id;
+        insert pdftestac;
+        
+        Pdf_Parser_Other_Notification__c pd = new Pdf_Parser_Other_Notification__c();
+        pd.Name = 'Other Notes';
+        pd.ToAddress__c = 'test@gmail.com';
+        insert pd;
+        System.assertequals('Other Notes',pd.name);
+                                  
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19038642_1551105661056.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+        
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator2());
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env);
+        Test.stopTest();
+    }
+    
+    static testMethod void cloneDumpsterEmptyandReturn(){
+               
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Empty and Return - 9/17/2019 - 11087 Moonlit Park San Antonio TX 78249';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'email body\n2225256325\nTitle';
+        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Cleanup Contractors LLC';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Cleanup Contractors LLC',ac.name);
+       
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        pdftestac.TestAccountid__c=ac.id;
+        insert pdftestac;
+        
+        Pdf_Parser_Other_Notification__c pd = new Pdf_Parser_Other_Notification__c();
+        pd.Name = 'Other Notes';
+        pd.ToAddress__c = 'test@gmail.com';
+        insert pd;
+        System.assertequals('Other Notes',pd.name);
+        
+        List<Container_Assets__c> containerassertlist = new List<Container_Assets__c>();
+        
+        Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '30 Yard';
+        containerassertlist.add(ContainerAsset);
+        
+        Container_Assets__c ContainerAsset1 = new Container_Assets__c();
+        ContainerAsset1.Status__c ='Active';
+        ContainerAsset1.Size__c = '30 Yard';
+        containerassertlist.add(ContainerAsset1);
+        insert containerassertlist;
+        
+        List<Dumpsters__c> Dumplist = new List<Dumpsters__c>();
+        
+        Dumpsters__c Dumpster1 = new Dumpsters__c();
+        Dumpster1.Pdf_Parser_Delivery_Address__c = '123456 Moonlit Park  , San Antonio TX 78249';
+        Dumpster1.Status__c = 'Drop Off Complete';
+        Dumpster1.Dumpster_Size__c = '30yd';
+        Dumpster1.AAccountccount__c = ac.id;
+        Dumpster1.Container_Asset__c = ContainerAsset1.id;
+        Dumpster1.Drop_Off_Visit_Date__c = system.today();
+        Dumpster1.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster1.Driver__c = 'Warren';
+        Dumpster1.Pick_Up_Driver__c = 'Warren';
+        Dumpster1.Purchase_Order__c = '94561687';
+        DumpList.add(Dumpster1);
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '11087 Moonlit Park  , San Antonio TX 78249';
+        Dumpster.Status__c = 'Drop Off Complete';
+        Dumpster.Dumpster_Size__c = '30yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = '945616871';
+        DumpList.add(Dumpster);
+        insert DumpList;
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19038642_1551105661056.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorforCloneDumpster());
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingEmailMultipleDumpsterFound(DumpList);
+        Test.stopTest();
+    }
+    
+    static testMethod void elseinsertDumpsterRecord(){
+               
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'New Delivery 11/13/2020 - 1415 West Rosewood Avenue San Antonio TX, 78201';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'email body\n2225256325\nTitle';
+        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Cleanup Contractors LLC';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Cleanup Contractors LLC',ac.name);
+       
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        pdftestac.TestAccountid__c=ac.id;
+        insert pdftestac;
+        
+        Pdf_Parser_Other_Notification__c pd = new Pdf_Parser_Other_Notification__c();
+        pd.Name = 'Other Notes';
+        pd.ToAddress__c = 'test@gmail.com';
+        insert pd;
+        System.assertequals('Other Notes',pd.name);
+        
+        List<Container_Assets__c> containerassertlist = new List<Container_Assets__c>();
+        
+        Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '30 Yard';
+        containerassertlist.add(ContainerAsset);
+        
+        Container_Assets__c ContainerAsset1 = new Container_Assets__c();
+        ContainerAsset1.Status__c ='Active';
+        ContainerAsset1.Size__c = '30 Yard';
+        containerassertlist.add(ContainerAsset1);
+        insert containerassertlist;
+        
+        List<Dumpsters__c> Dumplist = new List<Dumpsters__c>();
+        
+        Dumpsters__c Dumpster1 = new Dumpsters__c();
+        Dumpster1.Pdf_Parser_Delivery_Address__c = ' 1415 West Rosewood Avenue San Antonio TX, 78201';
+        Dumpster1.Status__c = 'Request for Pick-Up';
+        Dumpster1.Dumpster_Size__c = '30yd';
+        Dumpster1.Email_Success_helper__c = 'Request for Pick-Up';
+        Dumpster1.AAccountccount__c = ac.id;
+        Dumpster1.Trip_Order__c                  = Label.PDF_Parser_Trip_Order;
+        Dumpster1.Container_Asset__c = ContainerAsset1.id;
+        Dumpster1.Drop_Off_Visit_Date__c = system.today();
+        Dumpster1.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster1.Driver__c = 'Warren';
+        Dumpster1.Pick_Up_Driver__c = 'Warren';
+        Dumpster1.Purchase_Order__c = '94561687';
+        DumpList.add(Dumpster1);
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '11087 Moonlit Park  , San Antonio TX 78249';
+        Dumpster.Status__c = 'Drop Off Complete';
+        Dumpster.Dumpster_Size__c = '30yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = '945616871';
+        DumpList.add(Dumpster);
+        insert DumpList;
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19038642_1551105661056.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorforCloneDumpster());
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingEmailMultipleDumpsterFound(DumpList);
+        Test.stopTest();
+    }
+    
+   
+    
+    static testMethod void PDFParsingDiscontDumpster(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = '30 yard delivery - 9738 Hidden Falls - 10/25';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '   Regards, Karthikeyan T Merfantz Technologies Pvt. Ltd.     NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share or use without Merfantz’s approval.  If received in error, please contact the sender and delete the email and any attachments         From: Discount Dumpster Dispatch [mailto:dispatch@discountdumpsterco.com] <br>Sent: Wednesday, October 23, 2019 11:13 PM<br>To: operations@haul-brooke.com<br>Subject: 30 yard delivery - 9738 Hidden Falls - 10/25   Hello, Can you please schedule and confirm the following delivery for 10/25?   Thank you  <br><br>78250 - 30 cubic yard container <br>P.O. Number 20003<br><br>Dates: <br>25 Oct 2019 New Delivery <br>11 Nov 2019 Pickup <br><br>Delivery Address: <br> 5507 Queensloch Drive Houston Texas , 77096 <br><br>Onsite Contact: <br>David Barnes <br>210-559-6700 <br>PLEASE CALL OUR OFFICE WITH ANY ISSUES 804-223-1300 <br><br>Placement Instructions: <br>Call ahead. In driveway, left hand side facing house <br><br>Dumpster Contents:<br>remodel debris <br><br>================================================================ <br>Discount Dumpster <br>(804) 223-1300 <br>dispatch@discountdumpsterco.com';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Discount Dumpster Rental';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Discount Dumpster Rental',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+       
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorDiscount());
+        Test.startTest();
+        EmailPDFParsingHandler testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void LibertyDumpsterClone(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'New PO INV-15713 from Liberty Dumpster Rental';
+        email.fromAddress = 'someaddress@email.com';
+        email.plaintextbody= '<br><br> <br><br>Regards,<br><br>Ajeeth Kumar S<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share or use without MerfantzΓÇÖs approval.  If received in error, please contact the sender and delete the email and any attachments<br><br> <br><br>From: Liberty Dumpster [mailto:orders@libertydumpster.com] <br>Sent: Tuesday, March 26, 2019 1:28 AM<br>To: Operations@haul-brooke.com<br>Subject: New PO INV-15696 from Liberty Dumpster Rental<br><br> <br><br><br>Operations@haul-brooke.com <mailto:Operations@haul-brooke.com>  <br><br><br>Original PO:  PO INV-15696 from Liberty Dumpster Rental<br><br>DELIVERY ADDRESS:  <br>10423 Harbor Springs St San Antonio, TX, 78245<br>Israel Teran  210-716-7124<br><br>SIZE, DEBRIS TYPE, PLACEMENT/PERMIT: <br>switchout 30yd,  driveway<br><br>DELIVERY DATE & TIME:  <br>Tuesday, March 26, 2019  from  7am-12am<br><br>PICK DATE: <br>Monday, April 01, 2019<br><br>We appreciate all that you do for us!<br><br>Admin<br><br>Please call or email if you need more information.<br>Liberty Dumpster Rental Customer Service - (210) 775-0750<br>orders@libertydumpster.com <mailto:orders@libertydumpster.com> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Liberty Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Liberty Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                               
+        Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '30 Yard';
+        insert ContainerAsset;
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '10423 Harbor Springs St San Antonio, TX, 78245';
+        Dumpster.Status__c = 'Drop Off Complete';
+        Dumpster.Dumpster_Size__c = '30yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = 'INV-945616871';
+        insert Dumpster;
+                          
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsingTexas(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Create Contact';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'email body\n2225256325\nTitle';
+        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Cleanup Contractors LLC';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Cleanup Contractors LLC',ac.name);
+       
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        pdftestac.TestAccountid__c=ac.id;
+        insert pdftestac;
+        
+        Pdf_Parser_Other_Notification__c pd = new Pdf_Parser_Other_Notification__c();
+        pd.Name = 'Other Notes';
+        pd.ToAddress__c = 'test@gmail.com';
+        insert pd;
+        System.assertequals('Other Notes',pd.name);
+                                  
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19038642_1551105661056.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorTexas());
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsingFinalPickup(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'Swap Out 40 Yard SA 535 Denver Boulevard   San Antonio, TX 78210 (PO#) CH66077';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br> <br><br> <br><br> <br><br> <br><br>Regards,<br><br>Karthikeyan T<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share or use without Merfantz’s approval.  If received in error, please contact the sender and delete the email and any attachments<br><br> <br><br>From: Karthikeyan T &#124; Merfantz [mailto:tkarthikeyan@merfantz.in] <br>Sent: Tuesday, January 7, 2020 1:05 PM<br>To: \'smehala@merfantz.in\'<br>Subject: FW: Final 40 Yard SA 5405 Bandera Road San Antonio, TX 78238 (PO#) CH107147<br><br> <br><br> <br><br> <br><br> <br><br> <br><br> <br><br>Regards,<br><br>Karthikeyan T<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share or use without Merfantz’s approval.  If received in error, please contact the sender and delete the email and any attachments<br><br> <br><br>From: Ajeethkumar S &#124; Merfantz [mailto:sajeethkumar@merfantz.in] <br>Sent: Monday, January 6, 2020 3:12 PM<br>To: \'Karthikeyan T &#124; Merfantz\'<br>Subject: FW: Final 40 Yard SA 5405 Bandera Road San Antonio, TX 78238 (PO#) CH107147<br><br> <br><br> <br><br> <br><br><br>Regards,<br><br>Ajeeth Kumar S,<br><br>Merfantz Technologies Pvt. Ltd.<br><br><br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share or use without Merfantz’s approval.  If received in error, please contact the sender and delete the email and any attachments<br><br> <br><br>From: adr.teamaffordable@gmail.com <mailto:adr.teamaffordable@gmail.com>  [mailto:adr.teamaffordable@gmail.com] <br>Sent: Monday, December 23, 2019 11:40 PM<br>To: orders@haul-brooke.com <mailto:orders@haul-brooke.com> <br>Cc: operations@haul-brooke.com <mailto:operations@haul-brooke.com> <br>Subject: Final 40 Yard SA 5405 Bandera Road San Antonio, TX 78238 (PO#) CH107147<br><br> <br><br>Hello,<br><br>We are ready for a final pick up.<br><br>Please confirm :)<br><br>Affordable Dumpster Rental <br><br> <br><br><br>FINAL - PO# CH107147 <br><br><br>PLEASE DO NOT PICK UP/EXCHANGE/DELIVER WITHOUT AFFORDABLE DUMPSTER RENTALS PERMISSION<br><br>PLEASE ALWAYS MAKE AN EFFORT TO CALL CUSTOMER 1 HOUR PRIOR TO ARRIVAL<br><br> <br><br><br>ORDER INFORMATION - PO# CH107147 <br><br><br>Order Details<br><br>Service Address<br><br><br>Point of Contact<br><br>John Stubblefield<br><br>5405 Bandera Road <http://maps.google.com/maps?q=5405+Bandera+Road+San%20Antonio,+TX+78238> <br>San Antonio, TX 78238<br><br><br><br>Phone<br><br>(830) 730-3024 <tel:(830)%20730-3024> <br><br><br>Size<br><br>40 Yard SA<br><br><br>Debris<br><br>Construction Debris<br><br><br>Specific Placement<br><br><br>Back overhead door #104, there may be an orange cone to mark the door. Back up to the overhead door. #104. Point of contact is Benjamin Govea – 469-334-6224<br><br> <br><br>';
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Affordable Dumpsters';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Affordable Dumpsters',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+       Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '30 Yard';
+        insert ContainerAsset;
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '10423 Harbor Springs St San Antonio, TX, 78245';
+        Dumpster.Status__c = 'Drop Off Complete';
+        Dumpster.Dumpster_Size__c = '30yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = 'CH107147';
+        insert Dumpster;
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsingswapout(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'FW: Swap Out - 1/6/2020 - 314 Edgebrook Ln, San Antonio TX 78213';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = 'email body\n2225256325\nTitle';
+        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Cleanup Contractors LLC';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Cleanup Contractors LLC',ac.name);
+        
+        Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '40 Yard';
+        insert ContainerAsset;
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = 'r>314 Edgebrook Ln, San  , Antonio TX 78213';
+        Dumpster.Status__c = 'Drop Off Complete';
+        Dumpster.Dumpster_Size__c = '40yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = '945616871';
+        insert Dumpster;
+       
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        pdftestac.TestAccountid__c=ac.id;
+        insert pdftestac;
+        
+        Pdf_Parser_Other_Notification__c pd = new Pdf_Parser_Other_Notification__c();
+        pd.Name = 'Other Notes';
+        pd.ToAddress__c = 'test@gmail.com';
+        insert pd;
+        System.assertequals('Other Notes',pd.name);
+                                  
+        Messaging.InboundEmail.BinaryAttachment attachment = new Messaging.InboundEmail.BinaryAttachment();
+        attachment.body = blob.valueOf('Hello');
+        attachment.fileName = 'Purchase Order_19038642_1551105661056.pdf';
+        attachment.mimeTypeSubType = 'text/plain';
+        email.binaryAttachments = new Messaging.inboundEmail.BinaryAttachment[] { attachment };
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorSwapout());
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormailUpdate('Test');
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsingDetritus(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'New Dumpster requested for Deal #: D-0000111374';
+        email.fromAddress = 'someaddress@email.com';
+        email.plaintextbody= '<<<>>><br><br><br><br><br>Regards,<br>Karthikeyan T<br>Merfantz Technologies Pvt. Ltd.<br><br><br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and<br>is solely for the intended addressee(s).  Do not share or use without<br>Merfantzs approval.  If received in error, please contact the sender and<br>delete the email and any attachments<br><br>-----Original Message-----<br>From: noreply@salesforce.com [mailto:noreply@salesforce.com] On Behalf Of<br>Haulbrooke<br>Sent: Tuesday, February 25, 2020 8:40 PM<br>To: tkarthikeyan@merfantz.in<br>Subject: New Dumpster requested for Deal #: D-0000111374<br><br>Thank you for working with us! <br><br>Delivery & pricing details are listed below. Please read through the order<br>info and let us know if you have any questions or if pricing details are<br>inaccurate. Unless a removal date is listed, we will notify you when the<br>dumpster is ready for removal.<br><br><br><br>Deal #: D-0000111374<br><br>Dumpster #: DO-00017828<br><br>Delivery Address:5507 Queensloch Drive Houston Texas , 77096<br><br>Dumpster Size: 20 Yard<br><br>Material(s): C&D / Junk mixed<br><br>Delivery Date: 3/3/2020<br><br>Removal Date: 3/13/2020<br><br>Setting Instructions: will be setting in the back of the house through<br>driveway. call jennette when en route. Please call Jennette Clay when en<br>route: 210-240-8401<br><br>On Site Contact(s): Jennette Clay 210-240-8401<br><br><br><br>Haul Rate: $303.10<br><br>Delivery Fee: <br><br>Tons Included: 2<br><br>Additional Tons Rate: $50.00<br><br>Days Included: 10<br><br>Additional Daily Fee: $10.00<br><br>Additional Fees: <br><br><br>Thank you again for working with us!<br><br>Detritus LLC<br>Phone #: (888) 647-3602<br>Email: info@Detritus.us<br>';
+        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Detritus';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Detritus',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        pdftestac.TestAccountid__c=ac.id;
+        insert pdftestac;
+        
+        Test.startTest();        
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormailUpdate('Test');
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsingSwapDiscontDumpster(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = '30 yard swap - 9738 Hidden Falls - 10/25';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br> <br><br> <br><br> <br><br> <br><br>Regards,<br><br>Karthikeyan T<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and<br>is solely for the intended addressee(s).  Do not share or use without<br>Merfantz\'s approval.  If received in error, please contact the sender and<br>delete the email and any attachments<br><br> <br><br>From: noreply@salesforce.com [mailto:noreply@salesforce.com] On Behalf Of<br>Haulbrooke<br>Sent: Tuesday, March 31, 2020 12:34 AM<br>To: tkarthikeyan@merfantz.in<br>Subject: 20 yard swap - 16530 huebner Rd - 3/30<br><br> <br><br> <br><br>Hello, can you please schedule and confirm the following for 3/30?<br><br> <br><br>Thank you <br><br> <br><br>P.O. 018253<br><br><br>78248 - 20 cubic yard container,Extra Week <br><br>Dates: <br>30 Mar 2020 Swap <br>13 Apr 2020 Pickup <br><br>Delivery Address: <br>16530 Huebner Rd, San Antonio, TX 78248 <br><br>Onsite Contact: <br>MZ Contracting <br>210-322-2370 <br>PLEASE CALL OUR OFFICE WITH ANY ISSUES 804-223-1300 <br><br>Placement Instructions: <br>Call ahead. MUST DELIVER AFTER 7:30AM CALL Pete for placement 830-230-5626 <br><br>Dumpster Contents:<br>construction debris <br><br>================================================================ <br>Discount Dumpster <br>(804) 223-1300 <br>dispatch@discountdumpsterco.com <mailto:dispatch@discountdumpsterco.com>  <br><br>';
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Discount Dumpster Rental';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Discount Dumpster Rental',ac.name);
+        
+        Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '20 Yard';
+        insert ContainerAsset;
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '16530 Huebner Rd, San Antonio, TX 78248';
+        Dumpster.Status__c = 'Request for Pick-Up';
+        Dumpster.Dumpster_Size__c = '20yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = '945616871';
+        insert Dumpster;
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+        
+        attachment attch= new attachment();
+        attch.body = blob.valueOf('Hello');
+        attch.ContentType = 'application/vnd.ms-outlook';
+        attch.ParentId     = dumpster.Id;
+                                
+        system.debug(Dumpster);
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorDiscount());
+        Test.startTest();
+        EmailPDFParsingHandler testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+     static testMethod void PDFParsingDiscontDumpsternew(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'FW: O-796- New Delivery - 318 Berry Oaks Dr';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br> <br><br> <br><br> <br><br> <br><br>Regards,<br><br>Karthikeyan T<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share<br>or use without Merfantz\'s approval.  If received in error, please contact the sender and delete the email and any attachments<br><br> <br><br>From: Discount Dumpster Dispatch [mailto:dispatch@discountdumpsterco.com] <br>Sent: Monday, April 27, 2020 10:42 PM<br>To: Orders@haul-brooke.com; operations@haul-brooke.com<br>Subject: FW: O-796- New Delivery - 318 Berry Oaks Dr<br><br> <br><br> <br><br>Hi, Will you please schedule and confirm the dumpster New Delivery below? We kindly request an email response to confirm or deny. <br><br><br>Order Number <br><br>PO Date <br><br><br>O-796<br><br>4/27/2020<br><br> <br><br><br>Delivery Address<br><br>Contact Information <br><br>Action Type<br><br><br>318 Berry Oaks Dr, Bulverde,<br>TX,<br>78163<br><br>Keith Doney<br>keithdoney@hotmail.com <mailto:keithdoney@hotmail.com>  <br>(315) 608-0053 <br>(315) 608-0053 <br><br>New Delivery<br><br> <br><br><br>Delivery Date <br><br>Final Pickup Date<br><br>Issue in Servicing<br><br><br>4/28/2020<br><br>5/12/2020<br><br>Should driver encounter a problem with service & is unable to reach onsite contact please call our office at 804-223-1300. This will<br>help resolve potential issues in a timely manner and avoid a dry run trip.<br><br> <br><br><br>Product Name<br><br>Placement Instructions<br><br>Placement Dimensions<br><br>Dumpster Contents<br><br><br>20 Yard Dumpster<br><br>Give call a head should be home. pull in long drive place toward the back but on the drive way<br><br>100*9<br><br>TBD<br><br><br>Discount Dumpster Rental<br><br>13949 W. Colfax Ave., Ste 260,<br>Lakewood, CO 80401<br>855-573-DUMP <br>dispatch@discountdumpsterco.com <mailto:dispatch@discountdumpsterco.com>  <br>discountdumpsterco.com<br><br>';    
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Discount Dumpster Rental';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Discount Dumpster Rental',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+       
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorDiscount());
+        Test.startTest();
+        EmailPDFParsingHandler testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsingDiscontDumpsternew2(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'FW: O-796- New Delivery - 318 Berry Oaks Dr';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br> <br><br> <br><br> <br><br> <br><br>Regards,<br><br>Karthikeyan T<br><br>Merfantz Technologies Pvt. Ltd.<br><br> <br><br><br><br> <br><br>NOTE:  This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s).  Do not share<br>or use without Merfantz\'s approval.  If received in error, please contact the sender and delete the email and any attachments<br><br> <br><br>From: noreply@salesforce.com [mailto:noreply@salesforce.com] On Behalf Of Haulbrooke<br>Sent: Friday, May 29, 2020 3:05 AM<br>To: tkarthikeyan@merfantz.in<br>Subject: O-5301- New Delivery - 2416 tree branch<br><br> <br><br>Hi, Will you please schedule and confirm the dumpster New Delivery below? We kindly request an email response to confirm or deny. <br><br><br>Order Number <br><br>PO Date <br><br><br>O-5301<br><br>5/28/2020<br><br> <br><br><br>Product Name<br><br>Delivery Address<br><br>Contact Information <br><br>Action Type<br><br><br>20 Yard Dumpster<br><br>2416 tree branch, schertz, tx,<br>78154 <br><br>Julie Spidle<br>(512) 557-1398 <br><br>New Delivery<br><br> <br><br><br>Delivery Date <br><br>Final Pickup Date<br><br>Placement Instructions<br><br>Placement Dimensions<br><br>Dumpster Contents<br><br><br>5/29/2020<br><br>6/12/2020<br><br>driveway, call when @ property<br><br>17x24 ft<br><br>tile & carpet<br><br> <br><br><br>Issue in Servicing<br><br><br>Should driver encounter a problem with service & is unable to reach onsite contact please call our office at 804-223-1300. This will<br>help resolve potential issues in a timely manner and avoid a dry run trip.<br><br><br>Discount Dumpster Rental<br><br>13949 W. Colfax Ave., Ste 260,<br>Lakewood, CO 80401<br>855-573-DUMP <br>dispatch@discountdumpsterco.com <mailto:dispatch@discountdumpsterco.com>  <br>discountdumpsterco.com<br><br>';    
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Discount Dumpster Rental';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Discount Dumpster Rental',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+       
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorDiscount());
+        Test.startTest();
+        EmailPDFParsingHandler testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsingDiscontDumpsternew3(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'FW: O-796- New Delivery - 318 Berry Oaks Dr';
+        email.fromAddress = 'someaddress@email.com';
+        email.htmlbody = '</o:shapelayout></xml><![endif]--></head><body lang=EN-US link="#0563C1" vlink="#954F72"><div class=WordSection1><p class=MsoNormal><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p>&nbsp;</o:p></span></p><p class=MsoNormal><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p>&nbsp;</o:p></span></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#0070C0\'><o:p>&nbsp;</o:p></span></b></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#0070C0\'><o:p>&nbsp;</o:p></span></b></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#0070C0\'><o:p>&nbsp;</o:p></span></b></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#0070C0\'>Regards,</span></b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#1F497D\'><o:p></o:p></span></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#0070C0\'>Karthikeyan T<o:p></o:p></span></b></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#244061\'>Merfantz Technologies Pvt. Ltd.<o:p></o:p></span></b></p><p class=MsoNormal><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#1F497D\'><o:p>&nbsp;</o:p></span></p><p class=MsoNormal><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><img width=120 height=50 id="Picture_x0020_1" src="cid:image001.png@01D63D8F.8A1FB600" alt="Description: Description: Description: cid:image001.png@01D0E42D.9D973CA0"></span><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p></o:p></span></p><p class=MsoNormal><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p>&nbsp;</o:p></span></p><p class=MsoNormal><b><i><span style=\'font-size:8.0pt;font-family:"Verdana","sans-serif";color:#244061\'>NOTE</span></i></b><i><span style=\'font-size:8.0pt;font-family:"Calibri","sans-serif";color:navy\'>:&nbsp; </span></i><i><span lang=EN-GB style=\'font-size:8.0pt;font-family:"Verdana","sans-serif";color:gray\'>This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s). &nbsp;Do not share or use without Merfantz&#8217;s approval. &nbsp;If received in error, please contact the sender and delete the email and any attachments</span></i><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p></o:p></span></p><p class=MsoNormal><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p>&nbsp;</o:p></span></p><p class=MsoNormal><b><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif"\'>From:</span></b><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif"\'> noreply@salesforce.com [mailto:noreply@salesforce.com] <b>On Behalf Of </b>Haulbrooke<br><b>Sent:</b> Friday, June 5, 2020 9:19 PM<br><b>To:</b> tkarthikeyan@merfantz.in<br><b>Subject:</b> O-6263- New Delivery &#8211; 6619 Honeyridge Ln<o:p></o:p></span></p><p class=MsoNormal><o:p>&nbsp;</o:p></p><p class=MsoNormal>Hi, Will you please schedule and confirm the dumpster New Delivery below? We kindly request an email response to confirm or deny. <o:p></o:p></p><table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="50%" style=\'width:50.0%;border-collapse:collapse\'><thead><tr><td style=\'border:solid black 1.0pt;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Order Number <o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>PO Date <o:p></o:p></span></b></p></td></tr></thead><tr><td style=\'border:solid black 1.0pt;border-top:none;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>O-6263<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>6/5/2020<o:p></o:p></span></p></td></tr></table><p class=MsoNormal><o:p>&nbsp;</o:p></p><table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="50%" style=\'width:50.0%;border-collapse:collapse\'><thead><tr><td style=\'border:solid black 1.0pt;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Product Name<o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Delivery Address<o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Contact Information <o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Action Type<o:p></o:p></span></b></p></td></tr></thead><tr><td style=\'border:solid black 1.0pt;border-top:none;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>20 Yard Dumpster<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>6619 Honeyridge Ln, San Antonio, TX,<br>78239 <o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>Jamie Kuhn<br>2105609685 <o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>New Delivery<o:p></o:p></span></p></td></tr></table><p class=MsoNormal><o:p>&nbsp;</o:p></p><table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="50%" style=\'width:50.0%;border-collapse:collapse\'><thead><tr><td style=\'border:solid black 1.0pt;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Delivery Date <o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Final Pickup Date<o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Placement Instructions<o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Placement Dimensions<o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Dumpster Contents<o:p></o:p></span></b></p></td></tr></thead><tr><td style=\'border:solid black 1.0pt;border-top:none;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>6/8/2020<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>6/22/2020<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>Driveway, Please knock on door or ring doorbell<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>22*16 ft<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>Lumbar<o:p></o:p></span></p></td></tr></table><p class=MsoNormal><o:p>&nbsp;</o:p></p><table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="50%" style=\'width:50.0%;border-collapse:collapse\'><thead><tr><td style=\'border:solid black 1.0pt;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Issue in Servicing<o:p></o:p></span></b></p></td></tr></thead><tr><td style=\'border:solid black 1.0pt;border-top:none;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>Should driver encounter a problem with service &amp; is unable to reach onsite contact please call our office at 804-223-1300. This will help resolve potential issues in a timely manner and avoid a dry run trip.<o:p></o:p></span></p></td></tr></table><p class=MsoNormal><br><b>Discount Dumpster Rental</b><br><br>13949 W. Colfax Ave., Ste 260,<br>Lakewood, CO 80401<br>855-573-DUMP <br><a href="mailto:dispatch@discountdumpsterco.com">dispatch@discountdumpsterco.com</a> <br>discountdumpsterco.com<o:p></o:p></p></div></body></html>';    
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Discount Dumpster Rental';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Discount Dumpster Rental',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+       
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorDiscount());
+        Test.startTest();
+        EmailPDFParsingHandler testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsingrevicedemail(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = '*REVISED* New Delivery 7/24/2020 - 160 Creekside Way New Braunfels TX, 78130';
+        email.fromAddress = 'someaddress@email.com';
+        email.htmlbody = '</o:shapelayout></xml><![endif]--></head><body lang=EN-US link="#0563C1" vlink="#954F72"><div class=WordSection1><p class=MsoNormal><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p>&nbsp;</o:p></span></p><p class=MsoNormal><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p>&nbsp;</o:p></span></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#0070C0\'><o:p>&nbsp;</o:p></span></b></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#0070C0\'><o:p>&nbsp;</o:p></span></b></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#0070C0\'><o:p>&nbsp;</o:p></span></b></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#0070C0\'>Regards,</span></b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#1F497D\'><o:p></o:p></span></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#0070C0\'>Karthikeyan T<o:p></o:p></span></b></p><p class=MsoNormal><b><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#244061\'>Merfantz Technologies Pvt. Ltd.<o:p></o:p></span></b></p><p class=MsoNormal><span style=\'font-size:9.0pt;font-family:"Segoe UI","sans-serif";color:#1F497D\'><o:p>&nbsp;</o:p></span></p><p class=MsoNormal><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><img width=120 height=50 id="Picture_x0020_1" src="cid:image001.png@01D63D8F.8A1FB600" alt="Description: Description: Description: cid:image001.png@01D0E42D.9D973CA0"></span><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p></o:p></span></p><p class=MsoNormal><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p>&nbsp;</o:p></span></p><p class=MsoNormal><b><i><span style=\'font-size:8.0pt;font-family:"Verdana","sans-serif";color:#244061\'>NOTE</span></i></b><i><span style=\'font-size:8.0pt;font-family:"Calibri","sans-serif";color:navy\'>:&nbsp; </span></i><i><span lang=EN-GB style=\'font-size:8.0pt;font-family:"Verdana","sans-serif";color:gray\'>This e-mail and any attachments may be confidential or privileged and is solely for the intended addressee(s). &nbsp;Do not share or use without Merfantz&#8217;s approval. &nbsp;If received in error, please contact the sender and delete the email and any attachments</span></i><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p></o:p></span></p><p class=MsoNormal><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif";color:#1F497D\'><o:p>&nbsp;</o:p></span></p><p class=MsoNormal><b><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif"\'>From:</span></b><span style=\'font-size:11.0pt;font-family:"Calibri","sans-serif"\'> noreply@salesforce.com [mailto:noreply@salesforce.com] <b>On Behalf Of </b>Haulbrooke<br><b>Sent:</b> Friday, June 5, 2020 9:19 PM<br><b>To:</b> tkarthikeyan@merfantz.in<br><b>Subject:</b> O-6263- New Delivery &#8211; 6619 Honeyridge Ln<o:p></o:p></span></p><p class=MsoNormal><o:p>&nbsp;</o:p></p><p class=MsoNormal>Hi, Will you please schedule and confirm the dumpster New Delivery below? We kindly request an email response to confirm or deny. <o:p></o:p></p><table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="50%" style=\'width:50.0%;border-collapse:collapse\'><thead><tr><td style=\'border:solid black 1.0pt;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Order Number <o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>PO Date <o:p></o:p></span></b></p></td></tr></thead><tr><td style=\'border:solid black 1.0pt;border-top:none;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>O-6263<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>6/5/2020<o:p></o:p></span></p></td></tr></table><p class=MsoNormal><o:p>&nbsp;</o:p></p><table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="50%" style=\'width:50.0%;border-collapse:collapse\'><thead><tr><td style=\'border:solid black 1.0pt;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Product Name<o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Delivery Address<o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Contact Information <o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Action Type<o:p></o:p></span></b></p></td></tr></thead><tr><td style=\'border:solid black 1.0pt;border-top:none;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>20 Yard Dumpster<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>6619 Honeyridge Ln, San Antonio, TX,<br>78239 <o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>Jamie Kuhn<br>2105609685 <o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>New Delivery<o:p></o:p></span></p></td></tr></table><p class=MsoNormal><o:p>&nbsp;</o:p></p><table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="50%" style=\'width:50.0%;border-collapse:collapse\'><thead><tr><td style=\'border:solid black 1.0pt;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Delivery Date <o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Final Pickup Date<o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Placement Instructions<o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Placement Dimensions<o:p></o:p></span></b></p></td><td style=\'border:solid black 1.0pt;border-left:none;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Dumpster Contents<o:p></o:p></span></b></p></td></tr></thead><tr><td style=\'border:solid black 1.0pt;border-top:none;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>6/8/2020<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>6/22/2020<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>Driveway, Please knock on door or ring doorbell<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>22*16 ft<o:p></o:p></span></p></td><td style=\'border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>Lumbar<o:p></o:p></span></p></td></tr></table><p class=MsoNormal><o:p>&nbsp;</o:p></p><table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="50%" style=\'width:50.0%;border-collapse:collapse\'><thead><tr><td style=\'border:solid black 1.0pt;background:#CDCDCD;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><b><span style=\'font-size:9.0pt\'>Issue in Servicing<o:p></o:p></span></b></p></td></tr></thead><tr><td style=\'border:solid black 1.0pt;border-top:none;padding:.75pt .75pt .75pt .75pt\'><p class=MsoNormal align=center style=\'text-align:center\'><span style=\'font-size:9.0pt\'>Should driver encounter a problem with service &amp; is unable to reach onsite contact please call our office at 804-223-1300. This will help resolve potential issues in a timely manner and avoid a dry run trip.<o:p></o:p></span></p></td></tr></table><p class=MsoNormal><br><b>Discount Dumpster Rental</b><br><br>13949 W. Colfax Ave., Ste 260,<br>Lakewood, CO 80401<br>855-573-DUMP <br><a href="mailto:dispatch@discountdumpsterco.com">dispatch@discountdumpsterco.com</a> <br>discountdumpsterco.com<o:p></o:p></p></div></body></html>';    
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Discount Dumpster Rental';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Discount Dumpster Rental',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                                
+       
+                   
+        Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorDiscount());
+        Test.startTest();
+        EmailPDFParsingHandler testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    
+    static testMethod void PDFParsingBargainDumpster(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'NEW - PO#50152 FOR 20YD @ 3216 WASHINGTON AVE HOUSTON, TX 77007 FOR WEDNESDAY 05/05 THANK YOU!';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br> <br><br> <br><br> <br><br><br><br><br><br><br><br>NEW - PO#50152 FOR 20YD @ 3216 WASHINGTON AVE HOUSTON, TX 77007 FOR<br>WEDNESDAY 05/05 THANK YOU!<br><br><br> <br><br><br><br>NEW - PO#50152 FOR 20YD @ 3216 WASHINGTON AVE HOUSTON, TX 77007 FOR<br>WEDNESDAY 05/05 THANK YOU!<br><br><br>Bargain Dumpster<br>6300 St. Andrews Rd.<br>Suite D<br>Columbia, SC 29212<br>8035730003<br> <mailto:sales@bargaindumpster.com> sales@bargaindumpster.com<br> <http://www.bargaindumpster.com/> http://www.bargaindumpster.com<br><br>  <br><br><br>Purchase Order<br><br><br>VENDOR<br><br>SHIP TO<br><br>P.O. NO. 50152<br><br><br>Haulbrooke - Houston, TX<br><br>,<br><br>George Hixson<br>3216 Washington Ave<br>Houston, TX 77007<br><br>DATE. 05/03/2021<br><br> <br><br><br>Ship Via<br><br>Delivery Date<br><br><br>05/05/2022<br><br> <br><br><br>ACTIVITY<br><br>QTY<br><br>Weight Allowed<br><br>No. of Tons<br><br>RATE<br><br>AMOUNT<br><br><br>20yd<br><br>1<br><br>10 tons<br><br>  $429.17<br><br>$429.17<br><br><br>ESTIMATED TOTAL CHARGES: <br> <br>Price Quoted Includes:<br>Number of days:  10<br> <br>Delivery Fee: $0.00  <br> <br>Haul Fee: $0.00 <br> <br>Per Day rate: $10.00<br>Per Ton rate: $95.00<br>Rep name:AA<br>          <br>      <br>Total<br><br>$429.17<br><br>  <br><br>Onsite contact name: George<br>Onsite Phone#: 713-298-2238<br>Placement instructions: In driveway through the gate (which will be closed<br>but unlocked). The driveway is off Wichman St. There will be orange cones<br>set out where the customer wants the dumpster. Call en route.<br><br>**Bargain Services must receive an invoice on all<br>Purchase Orders within 90 days of the completion of the<br>Job or we reserve the right to deny payment.<br><br>          <br><br><br>Bargain Dumpsterm';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Bargain Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Bargain Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                             
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '>3216 Washington Ave Houston, TX 77007';
+        Dumpster.Status__c = 'Unscheduled';
+        Dumpster.Dumpster_Size__c = '20yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = 'INV-9456168571';
+        insert Dumpster;
+        
+        attachment attch= new attachment();
+        attch.body = blob.valueOf('Hello');
+        attch.ContentType = 'application/vnd.ms-outlook';
+        attch.ParentId     = dumpster.Id;
+        
+      //  Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorDiscount());
+        Test.startTest();
+        EmailPDFParsingHandler testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void PDFParsingBargainDumpster2(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'NEW - PO#50152 FOR 30YD @ 3216 WASHINGTON AVE HOUSTON, TX 77007 FOR WEDNESDAY 05/05 THANK YOU!';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br> <br><br> <br><br> <br><br><br><br><br><br><br><br>NEW - PO#50152 FOR 30YD @ 3216 WASHINGTON AVE HOUSTON, TX 77007 FOR<br>WEDNESDAY 05/05 THANK YOU!<br><br><br> <br><br><br><br>NEW - PO#50152 FOR 30YD @ 3216 WASHINGTON AVE HOUSTON, TX 77007 FOR<br>WEDNESDAY 05/05 THANK YOU!<br><br><br>Bargain Dumpster<br>6300 St. Andrews Rd.<br>Suite D<br>Columbia, SC 29212<br>8035730003<br> <mailto:sales@bargaindumpster.com> sales@bargaindumpster.com<br> <http://www.bargaindumpster.com/> http://www.bargaindumpster.com<br><br>  <br><br><br>Purchase Order<br><br><br>VENDOR<br><br>SHIP TO<br><br>P.O. NO. 500152<br><br><br>Haulbrooke - Houston, TX<br><br>,<br><br>George Hixson<br>3216 Washington Ave<br>Houston, TX 77007<br><br>DATE. 05/03/2021<br><br> <br><br><br>Ship Via<br><br>Delivery Date<br><br><br>05/05/2022<br><br> <br><br><br>ACTIVITY<br><br>QTY<br><br>Weight Allowed<br><br>No. of Tons<br><br>RATE<br><br>AMOUNT<br><br>30yd<br><br>1<br><br>10 tons<br><br>  $429.17<br><br>$429.17<br><br><br>ESTIMATED TOTAL CHARGES: <br> <br>Price Quoted Includes:<br>Number of days:  10<br> <br>Delivery Fee: $0.00  <br> <br>Haul Fee: $0.00 <br> <br>Per Day rate: $10.00<br>Per Ton rate: $95.00<br>Rep name:AA<br>          <br>      <br>Total<br><br>$429.17<br><br>  <br><br>Onsite contact name: George<br>Onsite Phone#: 713-298-2238<br>Placement instructions: In driveway through the gate (which will be closed<br>but unlocked). The driveway is off Wichman St. There will be orange cones<br>set out where the customer wants the dumpster. Call en route.<br><br>**Bargain Services must receive an invoice on all<br>Purchase Orders within 90 days of the completion of the<br>Job or we reserve the right to deny payment.<br><br>          <br><br><br>Bargain Dumpsterm';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Bargain Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Bargain Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=true;
+        insert pdftestac;
+                
+      //  Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorDiscount());
+        Test.startTest();
+        EmailPDFParsingHandler testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+  
+     static testMethod void PDFParsingBargainDumpster3(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'NEW - PO#50152 FOR 40YD @ 3216 WASHINGTON AVE HOUSTON, TX 77007 FOR WEDNESDAY 05/05 THANK YOU!';
+        email.fromAddress = 'someaddress@email.com';
+        email.plainTextBody = '<br><br> <br><br> <br><br> <br><br><br><br><br><br><br><br>NEW - PO#50152 FOR 40YD @ 3216 WASHINGTON AVE HOUSTON, TX 77007 FOR<br>WEDNESDAY 05/05 THANK YOU!<br><br><br> <br><br><br><br>NEW - PO#50152 FOR 40YD @ 3216 WASHINGTON AVE HOUSTON, TX 77007 FOR<br>WEDNESDAY 05/05 THANK YOU!<br><br><br>Bargain Dumpster<br>6300 St. Andrews Rd.<br>Suite D<br>Columbia, SC 29212<br>8035730003<br> <mailto:sales@bargaindumpster.com> sales@bargaindumpster.com<br> <http://www.bargaindumpster.com/> http://www.bargaindumpster.com<br><br>  <br><br><br>Purchase Order<br><br><br>VENDOR<br><br>SHIP TO<br><br>P.O. NO. 5030152<br><br><br>Haulbrooke - Houston, TX<br><br>,<br><br>George Hixson<br>3216 Washington Ave<br>Houston, TX 77007<br><br>DATE. 05/03/2021<br><br> <br><br><br>Ship Via<br><br>Delivery Date<br><br><br>05/05/2022<br><br> <br><br><br>ACTIVITY<br><br>QTY<br><br>Weight Allowed<br><br>No. of Tons<br><br>RATE<br><br>AMOUNT<br><br>40yd<br><br>1<br><br>10 tons<br><br>  $429.17<br><br>$429.17<br><br><br>ESTIMATED TOTAL CHARGES: <br> <br>Price Quoted Includes:<br>Number of days:  10<br> <br>Delivery Fee: $0.00  <br> <br>Haul Fee: $0.00 <br> <br>Per Day rate: $10.00<br>Per Ton rate: $95.00<br>Rep name:AA<br>          <br>      <br>Total<br><br>$429.17<br><br>  <br><br>Onsite contact name: George<br>Onsite Phone#: 713-298-2238<br>Placement instructions: In driveway through the gate (which will be closed<br>but unlocked). The driveway is off Wichman St. There will be orange cones<br>set out where the customer wants the dumpster. Call en route.<br><br>**Bargain Services must receive an invoice on all<br>Purchase Orders within 90 days of the completion of the<br>Job or we reserve the right to deny payment.<br><br>          <br><br><br>Bargain Dumpsterm';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=false;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Bargain Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Bargain Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=true;
+        insert pdftestac;
+                
+      //  Test.setMock(HttpCalloutMock.class, new MockHttpGeneratorDiscount());
+        Test.startTest();
+        EmailPDFParsingHandler testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+
+    
+    static testMethod void upsertBargainDumpster(){
+        
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'PO#17736 SWAP 40YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28 THANK YOU';
+        email.fromAddress = 'someaddress@email.com';
+        email.plaintextbody= '<br><br><br><br><br><br><br><br><br>PO#17736 SWAP 40YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28<br>THANK YOU<br><br><br> <br><br><br><br>PO#17736 SWAP 40YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28<br>THANK YOU<br><br><br>Bargain Dumpster<br>6300 St. Andrews Rd.<br>Suite D<br>Columbia, SC 29212<br>8035730003<br> <mailto:sales@bargaindumpster.com> sales@bargaindumpster.com<br> <http://www.bargaindumpster.com/> http://www.bargaindumpster.com<br><br>  <br><br><br>Purchase Order<br><br><br>VENDOR<br><br>SHIP TO<br><br>P.O. NO. 17736<br><br><br>Haulbrooke - Houston, TX<br><br>,<br><br>Alicia Simmons<br>603 Royal Oaks Dr<br>Friendswood, TX 77546<br><br>DATE. 04/27/2021<br><br> <br><br><br>Ship Via<br><br>Delivery Date<br><br><br>SWAP<br><br>06/27/2021<br><br> <br><br><br>ACTIVITY<br><br>QTY<br><br>Weight Allowed<br><br>No. of Tons<br><br>RATE<br><br>AMOUNT<br><br><br>40yd<br><br>1<br><br>10 tons<br><br>  $586.13<br><br>$586.13<br><br><br>ESTIMATED TOTAL CHARGES: <br> <br>Price Quoted Includes:<br>Number of days:  10<br> <br>Delivery Fee: $0.00  <br> <br>Haul Fee: $0.00 <br> <br>Per Day rate: $10.00<br>Per Ton rate: $95.00<br>Rep name:KA<br>          <br>      <br>Total<br><br>$586.13<br><br>  <br><br>Onsite contact name: Alicia<br>Onsite Phone#: 602-578-7861<br>Placement instructions: **CALL EN ROUTE** Driveway<br><br>**Bargain Services must receive an invoice on all<br>Purchase Orders within 90 days of the completion of the<br>Job or we reserve the right to deny payment.<br><br>          <br><br><br>Bargain Dumpster<br><br> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Bargain Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Bargain Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=false;
+        insert pdftestac;
+                               
+        Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '40 Yard';
+        insert ContainerAsset;
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '603 Royal Oaks Dr Friendswood, TX 77546';
+        Dumpster.Status__c = 'Drop Off Complete';
+        Dumpster.Dumpster_Size__c = '40yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = 'INV-945616871';
+        insert Dumpster;
+                          
+      //  Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void upsertBargainDumpster2(){
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'PO#17736 SWAP 30YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28 THANK YOU';
+        email.fromAddress = 'someaddress@email.com';
+        email.plaintextbody= '<br><br><br><br><br><br><br><br><br>PO#17736 SWAP 30YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28<br>THANK YOU<br><br><br> <br><br><br><br>PO#17736 SWAP 30YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28<br>THANK YOU<br><br><br>Bargain Dumpster<br>6300 St. Andrews Rd.<br>Suite D<br>Columbia, SC 29212<br>8035730003<br> <mailto:sales@bargaindumpster.com> sales@bargaindumpster.com<br> <http://www.bargaindumpster.com/> http://www.bargaindumpster.com<br><br>  <br><br><br>Purchase Order<br><br><br>VENDOR<br><br>SHIP TO<br><br>P.O. NO. 177036<br><br><br>Haulbrooke - Houston, TX<br><br>,<br><br>Alicia Simmons<br>603 Royal Oaks Dr<br>Friendswood, TX 77546<br><br>DATE. 04/27/2021<br><br> <br><br><br>Ship Via<br><br>Delivery Date<br><br><br>SWAP<br><br>06/27/2022<br><br> <br><br><br>ACTIVITY<br><br>QTY<br><br>Weight Allowed<br><br>No. of Tons<br><br>RATE<br><br>AMOUNT<br><br><br>30yd<br><br>1<br><br>10 tons<br><br>  $586.13<br><br>$586.13<br><br><br>ESTIMATED TOTAL CHARGES: <br> <br>Price Quoted Includes:<br>Number of days:  10<br> <br>Delivery Fee: $0.00  <br> <br>Haul Fee: $0.00 <br> <br>Per Day rate: $10.00<br>Per Ton rate: $95.00<br>Rep name:KA<br>          <br>      <br>Total<br><br>$586.13<br><br>  <br><br>Onsite contact name: Alicia<br>Onsite Phone#: 602-578-7861<br>Placement instructions: **CALL EN ROUTE** Driveway<br><br>**Bargain Services must receive an invoice on all<br>Purchase Orders within 90 days of the completion of the<br>Job or we reserve the right to deny payment.<br><br>          <br><br><br>Bargain Dumpster<br><br> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Bargain Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Bargain Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=true;
+        insert pdftestac;
+                               
+        Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '30 Yard';
+        insert ContainerAsset;
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '603 Royal Oaks Dr Friendswood, TX 77546';
+        Dumpster.Status__c = 'Drop Off Complete';
+        Dumpster.Dumpster_Size__c = '30yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = 'INV-94564168751';
+        insert Dumpster;
+                          
+      //  Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void upsertBargainDumpster3(){
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'PO#17736 SWAP 20YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28 THANK YOU';
+        email.fromAddress = 'someaddress@email.com';
+        email.plaintextbody= '<br><br><br><br><br><br><br><br><br>PO#17736 SWAP 20YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28<br>THANK YOU<br><br><br> <br><br><br><br>PO#17736 SWAP 20YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28<br>THANK YOU<br><br><br>Bargain Dumpster<br>6300 St. Andrews Rd.<br>Suite D<br>Columbia, SC 29212<br>8035730003<br> <mailto:sales@bargaindumpster.com> sales@bargaindumpster.com<br> <http://www.bargaindumpster.com/> http://www.bargaindumpster.com<br><br>  <br><br><br>Purchase Order<br><br><br>VENDOR<br><br>SHIP TO<br><br>P.O. NO. 2177036<br><br><br>Haulbrooke - Houston, TX<br><br>,<br><br>Alicia Simmons<br>603 Royal Oaks Dr<br>Friendswood, TX 77546<br><br>DATE. 04/27/2021<br><br> <br><br><br>Ship Via<br><br>Delivery Date<br><br><br>SWAP<br><br>06/27/2022<br><br> <br><br><br>ACTIVITY<br><br>QTY<br><br>Weight Allowed<br><br>No. of Tons<br><br>RATE<br><br>AMOUNT<br><br><br>20yd<br><br>1<br><br>10 tons<br><br>  $586.13<br><br>$586.13<br><br><br>ESTIMATED TOTAL CHARGES: <br> <br>Price Quoted Includes:<br>Number of days:  10<br> <br>Delivery Fee: $0.00  <br> <br>Haul Fee: $0.00 <br> <br>Per Day rate: $10.00<br>Per Ton rate: $95.00<br>Rep name:KA<br>          <br>      <br>Total<br><br>$586.13<br><br>  <br><br>Onsite contact name: Alicia<br>Onsite Phone#: 602-578-7861<br>Placement instructions: **CALL EN ROUTE** Driveway<br><br>**Bargain Services must receive an invoice on all<br>Purchase Orders within 90 days of the completion of the<br>Job or we reserve the right to deny payment.<br><br>          <br><br><br>Bargain Dumpster<br><br> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Bargain Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Bargain Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=true;
+        insert pdftestac;
+                               
+        Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '20 Yard';
+        insert ContainerAsset;
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '603 Royal Oaks Dr Friendswood, TX 77546';
+        Dumpster.Status__c = 'Drop Off Complete';
+        Dumpster.Dumpster_Size__c = '20yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = 'INV-94564168751';
+        insert Dumpster;
+                          
+      //  Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+    static testMethod void FinalpickBargainDumpster(){
+        
+        Messaging.InboundEmail email = new Messaging.InboundEmail() ;
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        
+        email.subject = 'FINAL PICK UP MONDAY 07/12 - PO#52990 - 20YD @ 622 E 14th Street Houston TX 77008 THANKS SO MUCH!';
+        email.fromAddress = 'someaddress@email.com';
+        email.plaintextbody= '<br><br><br><br><br><br><br><br><br>PO#17736 SWAP 20YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28<br>THANK YOU<br><br><br> <br><br><br><br>PO#17736 SWAP 20YD @ 603 ROYAL OAKS DR FRIENDSWOOD, TX 77546 TOMORROW 04/28<br>THANK YOU<br><br><br>Bargain Dumpster<br>6300 St. Andrews Rd.<br>Suite D<br>Columbia, SC 29212<br>8035730003<br> <mailto:sales@bargaindumpster.com> sales@bargaindumpster.com<br> <http://www.bargaindumpster.com/> http://www.bargaindumpster.com<br><br>  <br><br><br>Purchase Order<br><br><br>VENDOR<br><br>SHIP TO<br><br>P.O. NO. 2177036<br><br><br>Haulbrooke - Houston, TX<br><br>,<br><br>Alicia Simmons<br>603 Royal Oaks Dr<br>Friendswood, TX 77546<br><br>DATE. 04/27/2021<br><br> <br><br><br>Ship Via<br><br>Delivery Date<br><br><br>SWAP<br><br>06/27/2022<br><br> <br><br><br>ACTIVITY<br><br>QTY<br><br>Weight Allowed<br><br>No. of Tons<br><br>RATE<br><br>AMOUNT<br><br><br>20yd<br><br>1<br><br>10 tons<br><br>  $586.13<br><br>$586.13<br><br><br>ESTIMATED TOTAL CHARGES: <br> <br>Price Quoted Includes:<br>Number of days:  10<br> <br>Delivery Fee: $0.00  <br> <br>Haul Fee: $0.00 <br> <br>Per Day rate: $10.00<br>Per Ton rate: $95.00<br>Rep name:KA<br>          <br>      <br>Total<br><br>$586.13<br><br>  <br><br>Onsite contact name: Alicia<br>Onsite Phone#: 602-578-7861<br>Placement instructions: **CALL EN ROUTE** Driveway<br><br>**Bargain Services must receive an invoice on all<br>Purchase Orders within 90 days of the completion of the<br>Job or we reserve the right to deny payment.<br><br>          <br><br><br>Bargain Dumpster<br><br> <br><br>';        
+        Container_Asset__c CAcustomSetting = new Container_Asset__c();
+        CAcustomSetting.name='test';
+        CAcustomSetting.Enable__c=true;
+        insert CAcustomSetting;
+        System.assertequals('test',CAcustomSetting.name);
+        
+        Account ac = new Account();
+        ac.Name = 'Bargain Dumpster';
+        ac.Haulbrooke_Account__c='yes';
+        insert ac;
+        System.assertequals('Bargain Dumpster',ac.name);
+        
+        ParserPDFTestAccount__c pdftestac = new ParserPDFTestAccount__c();
+        pdftestac.Name = 'PDFTestAccount';
+        pdftestac.EnableTestAccount__c=true;
+        insert pdftestac;
+                               
+        Container_Assets__c ContainerAsset = new Container_Assets__c();
+        ContainerAsset.Status__c ='Active';
+        ContainerAsset.Size__c = '20 Yard';
+        insert ContainerAsset;
+        
+        Dumpsters__c Dumpster = new Dumpsters__c();
+        Dumpster.Pdf_Parser_Delivery_Address__c = '603 Royal Oaks Dr Friendswood, TX 77546';
+        Dumpster.Status__c = 'Drop Off Complete';
+        Dumpster.Dumpster_Size__c = '20yd';
+        Dumpster.AAccountccount__c = ac.id;
+        Dumpster.Container_Asset__c = ContainerAsset.id;
+        Dumpster.Drop_Off_Visit_Date__c = system.today();
+        Dumpster.Confirmed_Pick_Up_Date__c = system.today();
+        Dumpster.Driver__c = 'Warren';
+        Dumpster.Pick_Up_Driver__c = 'Warren';
+        Dumpster.Purchase_Order__c = '52990';
+        insert Dumpster;
+                          
+      //  Test.setMock(HttpCalloutMock.class, new MockHttpGenerator());
+        Test.startTest();
+        EmailPDFParsingHandler  testInbound = new EmailPDFParsingHandler();
+        testInbound.handleInboundEmail(email, env); 
+        EmailPDFParsingHandler.SendingErrormail('System.DmlException: Insert failed. First exception on row 0; first error: NUMBER_OUTSIDE_VALID_RANGE, Drop Off Trip Hours: value outside of valid range on numeric field: 5867951: [Drop_Off_Trip_Hours__c]','null',null);
+        Test.stopTest();
+    }
+    
+}
